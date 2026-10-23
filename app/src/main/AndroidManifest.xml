@@ -5,8 +5,18 @@
         android:label="@string/app_name"
         android:theme="@android:style/Theme.DeviceDefault.DayNight">
 
-        <!-- Receives http/https links and custom schemes (market://, intent://, aliexpress://).
-             Not autoVerify: verified domains would not reach us anyway. -->
+        <!-- Log screen, opened from the launcher. -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <!-- Receives http/https links and custom schemes (market://, intent://).
+             Not autoVerify: verified domains do not reach us anyway. -->
         <activity
             android:name=".ProbeActivity"
             android:exported="true"

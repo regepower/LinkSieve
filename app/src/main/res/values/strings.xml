@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LinkSieve</string>
+    <string name="clear">Clear log</string>
+    <string name="no_entries">No links received yet. Open a link in another app to test.</string>
+    <string name="logged">Link logged</string>
+    <string name="detail_title">Incoming intent</string>
+    <string name="copy">Copy</string>
+    <string name="copied">Copied</string>
 </resources>

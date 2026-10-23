@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">LinkSieve</string>
+    <string name="clear">Protokoll leeren</string>
+    <string name="no_entries">Noch keine Links empfangen. Öffne einen Link in einer anderen App zum Testen.</string>
+    <string name="logged">Link protokolliert</string>
+    <string name="detail_title">Eingehender Intent</string>
+    <string name="copy">Kopieren</string>
+    <string name="copied">Kopiert</string>
+</resources>
