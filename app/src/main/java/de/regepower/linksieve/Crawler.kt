@@ -3,6 +3,7 @@ package de.regepower.linksieve
 import android.content.Context
 import android.content.pm.ApplicationInfo
 import android.content.pm.PackageManager
+import android.content.res.Resources
 import android.content.res.XmlResourceParser
 import android.os.Build
 import org.xmlpull.v1.XmlPullParser
@@ -35,8 +36,8 @@ object Crawler {
             if (ai.packageName == c.packageName) continue
             val label = pm.getApplicationLabel(ai).toString()
             try {
-                val parser = pm.getResourcesForApplication(ai).assets.openXmlResourceParser("AndroidManifest.xml")
-                parser.use { out += parse(it, ai.packageName, label) }
+                val res = pm.getResourcesForApplication(ai)
+                res.assets.openXmlResourceParser("AndroidManifest.xml").use { out += parse(it, res, ai.packageName, label) }
             } catch (_: Exception) {
                 // Unreadable manifest (rare): skip the app.
             }
@@ -71,10 +72,16 @@ object Crawler {
         return -1
     }
 
-    private fun attr(p: XmlResourceParser, name: String): String? =
-        index(p, name).takeIf { it >= 0 }?.let { p.getAttributeValue(it) }
+    /** Attribute value; "@123" string references are resolved through the app's resources. */
+    private fun attr(p: XmlResourceParser, name: String, res: Resources? = null): String? {
+        val i = index(p, name).takeIf { it >= 0 } ?: return null
+        val value = p.getAttributeValue(i) ?: return null
+        if (res == null || !value.startsWith("@")) return value
+        val id = p.getAttributeResourceValue(i, 0)
+        return if (id == 0) value else runCatching { res.getString(id) }.getOrDefault(value)
+    }
 
-    private fun parse(p: XmlResourceParser, pkg: String, label: String): List<LinkFilter> {
+    private fun parse(p: XmlResourceParser, res: Resources, pkg: String, label: String): List<LinkFilter> {
         val out = ArrayList<LinkFilter>()
         var activity = ""
         var inFilter = false
@@ -96,9 +103,9 @@ object Crawler {
                     }
                     "action" -> if (inFilter) attr(p, "name")?.let { actions += it }
                     "data" -> if (inFilter) {
-                        attr(p, "scheme")?.let { schemes += it.lowercase() }
-                        attr(p, "host")?.let { hosts += it }
-                        (attr(p, "path") ?: attr(p, "pathPrefix")?.let { "$it*" } ?: attr(p, "pathPattern"))
+                        attr(p, "scheme", res)?.let { schemes += it.lowercase() }
+                        attr(p, "host", res)?.let { hosts += it }
+                        (attr(p, "path", res) ?: attr(p, "pathPrefix", res)?.let { "$it*" } ?: attr(p, "pathPattern", res))
                             ?.let { paths += it }
                     }
                 }

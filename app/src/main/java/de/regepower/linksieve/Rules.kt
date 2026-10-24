@@ -9,9 +9,6 @@ object Rules {
     const val ALLOW = "allow"
     const val BLOCK = "block"
 
-    /** Schemes LinkSieve declares in its manifest; keep in sync with AndroidManifest.xml. */
-    val SCHEMES = setOf("http", "https", "market", "intent")
-
     private fun prefs(c: Context) = c.getSharedPreferences("rules", Context.MODE_PRIVATE)
 
     /** Rule key: market -> app id, web -> host, intent -> its target, else scheme://host. */

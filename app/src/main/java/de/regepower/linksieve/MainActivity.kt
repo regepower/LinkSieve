@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -25,6 +26,7 @@ class MainActivity : Activity() {
     private var scanning = false
     private var entries: List<LinkEntry> = emptyList()
     private var found: List<LinkFilter> = emptyList()
+    private val caught = HashMap<String, Boolean>()
     private var apps: List<Pair<String, String>> = emptyList()
 
     private lateinit var adapter: ArrayAdapter<String>
@@ -162,7 +164,7 @@ class MainActivity : Activity() {
 
     private fun onExtra() {
         if (scanMode) {
-            val missing = found.map { it.scheme }.filter { it !in Rules.SCHEMES }.distinct().sorted()
+            val missing = found.map { it.scheme }.filter { !catches(it) }.distinct().sorted()
             copy(missing.joinToString("\n"))
         } else {
             open(Intent(Settings.ACTION_MANAGE_DEFAULT_APPS_SETTINGS))
@@ -172,8 +174,17 @@ class MainActivity : Activity() {
     private fun status(f: LinkFilter): Int = when {
         f.scheme in setOf("http", "https") && f.autoVerify -> R.string.st_verified
         f.scheme in setOf("http", "https") -> R.string.st_browser
-        f.scheme in Rules.SCHEMES -> R.string.st_caught
+        catches(f.scheme) -> R.string.st_caught
         else -> R.string.st_missing
+    }
+
+    /** Whether LinkSieve's own link activity accepts this scheme (read from our manifest). */
+    private fun catches(scheme: String): Boolean = caught.getOrPut(scheme) {
+        val probe = Intent(Intent.ACTION_VIEW, Uri.parse("$scheme://x"))
+            .addCategory(Intent.CATEGORY_BROWSABLE)
+            .setPackage(packageName)
+        @Suppress("DEPRECATION")
+        packageManager.queryIntentActivities(probe, PackageManager.MATCH_DEFAULT_ONLY).isNotEmpty()
     }
 
     private fun showFilter(f: LinkFilter) {

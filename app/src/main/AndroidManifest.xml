@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
 
-        <!-- Receives links. Schemes must match Rules.SCHEMES.
+        <!-- Receives links. The scan detects caught schemes itself (query against this activity).
              Generic http/https (no host) makes LinkSieve selectable as default browser. -->
         <activity
             android:name=".ProbeActivity"
@@ -44,7 +44,38 @@
                 <data android:scheme="market" />
                 <data android:scheme="intent" />
             </intent-filter>
+            <!-- App deep links that ads use (from the scan). No system schemes (tel, mailto, sms, geo)
+                 and no login/payment callbacks, those would break calls and sign-ins. -->
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="amazonmobile" />
+                <data android:scheme="amzn" />
+                <data android:scheme="bahnsparer" />
+                <data android:scheme="com.google.android.apps.youtube" />
+                <data android:scheme="com.lidlplus.app" />
+                <data android:scheme="disneyplus" />
+                <data android:scheme="docmorris" />
+                <data android:scheme="geizhals" />
+                <data android:scheme="lidlplus" />
+                <data android:scheme="lidlplus-app" />
+                <data android:scheme="midiscover" />
+                <data android:scheme="mimarket" />
+                <data android:scheme="soundcloud" />
+                <data android:scheme="spotify" />
+                <data android:scheme="steammobile" />
+                <data android:scheme="streamflix" />
+                <data android:scheme="tunein" />
+                <data android:scheme="tunein.player" />
+                <data android:scheme="vnd.youtube" />
+                <data android:scheme="vnd.youtube.launch" />
+                <data android:scheme="wetteronline" />
+                <data android:scheme="weixin" />
+                <data android:scheme="whatsapp" />
+            </intent-filter>
         </activity>
+
         <!-- App-start guard: dialog after an intercepted start. -->
         <activity
             android:name=".GuardActivity"
