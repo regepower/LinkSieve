@@ -118,6 +118,8 @@ class ProbeActivity : Activity() {
         return runCatching {
             if (pick != null) {
                 target.setClassName(pick.activityInfo.packageName, pick.activityInfo.name)
+                // Already decided here: the app-start guard must not ask again.
+                Guard.allowOnce(pick.activityInfo.packageName)
                 startActivity(target)
             } else {
                 val chooser = Intent.createChooser(target, null)

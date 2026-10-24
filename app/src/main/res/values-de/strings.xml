@@ -34,4 +34,13 @@
     <string name="blocked">Blockiert: %1$s</string>
     <string name="no_target">Keine App für diesen Link gefunden</string>
     <string name="unknown_source">unbekannt</string>
+    <string name="tab_guard">App-Starts</string>
+    <string name="guard_enable">Bedienungshilfen</string>
+    <string name="guard_on">Schutz ist aktiv.</string>
+    <string name="guard_off">Schutz ist aus: LinkSieve unter Bedienungshilfen einschalten. Bei Installation per APK vorher „Eingeschränkte Einstellungen zulassen“ (App-Info → ⋮).</string>
+    <string name="guard_hint">Apps antippen, die geschützt werden sollen (✓). Öffnet eine andere App eine geschützte App, geht LinkSieve zurück und fragt nach.</string>
+    <string name="guard_description">Erkennt, wenn eine App eine andere App öffnet (z. B. aus Werbung), geht zurück und fragt, ob sie geöffnet werden soll. Liest nur, welche App vorne ist, keine Bildschirminhalte.</string>
+    <string name="guard_title">App-Start abgefangen</string>
+    <string name="guard_message">%1$s wollte %2$s öffnen.</string>
+    <string name="remember_pair">Für dieses App-Paar merken</string>
 </resources>

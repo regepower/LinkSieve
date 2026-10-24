@@ -45,5 +45,26 @@
                 <data android:scheme="intent" />
             </intent-filter>
         </activity>
+        <!-- App-start guard: dialog after an intercepted start. -->
+        <activity
+            android:name=".GuardActivity"
+            android:exported="false"
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@style/Translucent" />
+
+        <service
+            android:name=".GuardService"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/guard_service" />
+        </service>
     </application>
 </manifest>

@@ -17,18 +17,21 @@ import android.widget.ListView
 import android.widget.TextView
 import android.widget.Toast
 
-/** Two views: log of received links, and the scan of link patterns registered by installed apps. */
+/** Three tabs: log, link patterns of installed apps (scan), and the app-start guard. */
 class MainActivity : Activity() {
 
-    private var scanMode = false
+    private var tab = TAB_LOG
+    private val scanMode get() = tab == TAB_SCAN
     private var scanning = false
     private var entries: List<LinkEntry> = emptyList()
     private var found: List<LinkFilter> = emptyList()
+    private var apps: List<Pair<String, String>> = emptyList()
 
     private lateinit var adapter: ArrayAdapter<String>
     private lateinit var info: TextView
     private lateinit var tabLog: Button
     private lateinit var tabScan: Button
+    private lateinit var tabGuard: Button
     private lateinit var action: Button
     private lateinit var extra: Button
 
@@ -39,8 +42,9 @@ class MainActivity : Activity() {
             textSize = 22f
             setPadding(0, 0, 0, 16)
         }
-        tabLog = button(R.string.tab_log) { scanMode = false; refresh() }
-        tabScan = button(R.string.tab_scan) { scanMode = true; refresh() }
+        tabLog = button(R.string.tab_log) { tab = TAB_LOG; refresh() }
+        tabScan = button(R.string.tab_scan) { tab = TAB_SCAN; refresh() }
+        tabGuard = button(R.string.tab_guard) { tab = TAB_GUARD; loadApps() }
         action = button(R.string.clear) { onAction() }
         extra = button(R.string.default_browser) { onExtra() }
         info = TextView(this).apply { setPadding(0, 16, 0, 16) }
@@ -49,14 +53,18 @@ class MainActivity : Activity() {
         adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, ArrayList())
         list.adapter = adapter
         list.setOnItemClickListener { _, _, pos, _ ->
-            if (scanMode) showFilter(found[pos]) else showEntry(entries[pos])
+            when (tab) {
+                TAB_SCAN -> showFilter(found[pos])
+                TAB_GUARD -> { Guard.toggle(this, apps[pos].first); refresh() }
+                else -> showEntry(entries[pos])
+            }
         }
 
         setContentView(LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setPadding(32, 32, 32, 0)
             addView(title)
-            addView(row(tabLog, tabScan))
+            addView(row(tabLog, tabScan, tabGuard))
             addView(row(action, extra))
             addView(info)
             addView(list, LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, 0, 1f))
@@ -74,17 +82,26 @@ class MainActivity : Activity() {
         setOnClickListener { onClick() }
     }
 
-    private fun row(a: View, b: View) = LinearLayout(this).apply {
+    private fun row(vararg views: View) = LinearLayout(this).apply {
         orientation = LinearLayout.HORIZONTAL
-        addView(a, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
-        addView(b, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+        for (v in views) addView(v, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
     }
 
     private fun refresh() {
-        tabLog.isEnabled = scanMode
-        tabScan.isEnabled = !scanMode
+        tabLog.isEnabled = tab != TAB_LOG
+        tabScan.isEnabled = tab != TAB_SCAN
+        tabGuard.isEnabled = tab != TAB_GUARD
+        extra.visibility = if (tab == TAB_GUARD) View.GONE else View.VISIBLE
         adapter.clear()
-        if (scanMode) {
+        if (tab == TAB_GUARD) {
+            action.text = getString(R.string.guard_enable)
+            action.isEnabled = true
+            val on = Guard.isEnabled(this)
+            info.text = getString(if (on) R.string.guard_on else R.string.guard_off) + "\n" + getString(R.string.guard_hint)
+            val targets = Guard.targets(this)
+            apps = apps.sortedWith(compareBy({ it.first !in targets }, { it.second.lowercase() }))
+            adapter.addAll(apps.map { (pkg, label) -> (if (pkg in targets) "✓ " else "    ") + "$label\n$pkg" })
+        } else if (scanMode) {
             action.text = getString(if (scanning) R.string.scanning else R.string.scan)
             action.isEnabled = !scanning
             extra.text = getString(R.string.copy_schemes)
@@ -102,6 +119,10 @@ class MainActivity : Activity() {
     }
 
     private fun onAction() {
+        if (tab == TAB_GUARD) {
+            open(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+            return
+        }
         if (!scanMode) {
             LogStore.clear(this)
             refresh()
@@ -114,6 +135,26 @@ class MainActivity : Activity() {
             runOnUiThread {
                 found = result
                 scanning = false
+                refresh()
+            }
+        }.start()
+    }
+
+    /** Launchable apps (plus guarded ones) for the guard target list. */
+    private fun loadApps() {
+        refresh()
+        Thread {
+            val pm = packageManager
+            val launcher = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER)
+            @Suppress("DEPRECATION")
+            val pkgs = pm.queryIntentActivities(launcher, 0).map { it.activityInfo.packageName }.toMutableSet()
+            pkgs += Guard.targets(this)
+            pkgs -= packageName
+            val list = pkgs.map { pkg ->
+                pkg to runCatching { pm.getApplicationLabel(pm.getApplicationInfo(pkg, 0)).toString() }.getOrDefault(pkg)
+            }
+            runOnUiThread {
+                apps = list
                 refresh()
             }
         }.start()
@@ -188,5 +229,11 @@ class MainActivity : Activity() {
     private fun copy(text: String) {
         getSystemService(ClipboardManager::class.java).setPrimaryClip(ClipData.newPlainText("LinkSieve", text))
         Toast.makeText(this, R.string.copied, Toast.LENGTH_SHORT).show()
+    }
+
+    private companion object {
+        const val TAB_LOG = 0
+        const val TAB_SCAN = 1
+        const val TAB_GUARD = 2
     }
 }

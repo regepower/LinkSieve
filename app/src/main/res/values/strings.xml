@@ -34,4 +34,13 @@
     <string name="blocked">Blocked: %1$s</string>
     <string name="no_target">No app found for this link</string>
     <string name="unknown_source">unknown</string>
+    <string name="tab_guard">App starts</string>
+    <string name="guard_enable">Accessibility settings</string>
+    <string name="guard_on">Guard is on.</string>
+    <string name="guard_off">Guard is off: enable LinkSieve under Accessibility. For a sideloaded app first allow restricted settings (App info → ⋮).</string>
+    <string name="guard_hint">Tap apps to guard (✓). If a guarded app is opened by another app, LinkSieve goes back and asks.</string>
+    <string name="guard_description">Detects when an app opens another app (e.g. from an ad), goes back and asks whether to open it. Reads only which app is in front, no screen content.</string>
+    <string name="guard_title">App start intercepted</string>
+    <string name="guard_message">%1$s wanted to open %2$s.</string>
+    <string name="remember_pair">Remember for this pair of apps</string>
 </resources>
