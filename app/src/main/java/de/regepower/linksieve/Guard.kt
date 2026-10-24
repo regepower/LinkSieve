@@ -21,7 +21,7 @@ object Guard {
         HashSet(prefs(c).getStringSet(KEY_TARGETS, null) ?: DEFAULT_TARGETS)
 
     fun toggle(c: Context, pkg: String) {
-        val set = targets(c)
+        val set = HashSet(targets(c))
         if (!set.remove(pkg)) set.add(pkg)
         prefs(c).edit().putStringSet(KEY_TARGETS, set).apply()
     }
