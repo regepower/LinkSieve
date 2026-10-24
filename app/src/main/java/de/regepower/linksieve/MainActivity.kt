@@ -36,6 +36,7 @@ class MainActivity : Activity() {
     private lateinit var tabGuard: Button
     private lateinit var action: Button
     private lateinit var extra: Button
+    private lateinit var banner: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +51,14 @@ class MainActivity : Activity() {
         action = button(R.string.clear) { onAction() }
         extra = button(R.string.default_browser) { onExtra() }
         info = TextView(this).apply { setPadding(0, 16, 0, 16) }
+        // Shown only while the guard is not enabled under Accessibility.
+        banner = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            setPadding(24, 16, 24, 16)
+            setBackgroundColor(0x33B00020)
+            addView(TextView(this@MainActivity).apply { text = getString(R.string.guard_missing) })
+            addView(button(R.string.guard_enable) { open(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) })
+        }
 
         val list = ListView(this)
         adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, ArrayList())
@@ -66,6 +75,9 @@ class MainActivity : Activity() {
             orientation = LinearLayout.VERTICAL
             setPadding(32, 32, 32, 0)
             addView(title)
+            addView(banner, LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT,
+            ).apply { bottomMargin = 16 })
             addView(row(tabLog, tabScan, tabGuard))
             addView(row(action, extra))
             addView(info)
@@ -90,6 +102,8 @@ class MainActivity : Activity() {
     }
 
     private fun refresh() {
+        val guardOn = Guard.isEnabled(this)
+        banner.visibility = if (guardOn) View.GONE else View.VISIBLE
         tabLog.isEnabled = tab != TAB_LOG
         tabScan.isEnabled = tab != TAB_SCAN
         tabGuard.isEnabled = tab != TAB_GUARD
@@ -98,8 +112,7 @@ class MainActivity : Activity() {
         if (tab == TAB_GUARD) {
             action.text = getString(R.string.guard_enable)
             action.isEnabled = true
-            val on = Guard.isEnabled(this)
-            info.text = getString(if (on) R.string.guard_on else R.string.guard_off) + "\n" + getString(R.string.guard_hint)
+            info.text = getString(if (guardOn) R.string.guard_on else R.string.guard_off) + "\n" + getString(R.string.guard_hint)
             val targets = Guard.targets(this)
             apps = apps.sortedWith(compareBy({ it.first !in targets }, { it.second.lowercase() }))
             adapter.addAll(apps.map { (pkg, label) -> (if (pkg in targets) "✓ " else "    ") + "$label\n$pkg" })

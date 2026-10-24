@@ -43,4 +43,5 @@
     <string name="guard_title">App-Start abgefangen</string>
     <string name="guard_message">%1$s wollte %2$s öffnen.</string>
     <string name="remember_pair">Für dieses App-Paar merken</string>
+    <string name="guard_missing">Schutz vor App-Starts ist aus. LinkSieve unter Bedienungshilfen einschalten (bei APK-Installation vorher in App-Info → ⋮ „Eingeschränkte Einstellungen zulassen“).</string>
 </resources>

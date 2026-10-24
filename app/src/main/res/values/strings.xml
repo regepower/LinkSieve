@@ -43,4 +43,5 @@
     <string name="guard_title">App start intercepted</string>
     <string name="guard_message">%1$s wanted to open %2$s.</string>
     <string name="remember_pair">Remember for this pair of apps</string>
+    <string name="guard_missing">App-start guard is off. Enable LinkSieve under Accessibility (sideloaded app: first allow restricted settings in App info → ⋮).</string>
 </resources>
