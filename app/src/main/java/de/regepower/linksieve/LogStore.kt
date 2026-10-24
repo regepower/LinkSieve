@@ -15,11 +15,15 @@ data class LinkEntry(
     val referrer: String,
     val extraReferrer: String,
     val callingPackage: String,
+    val ruleKey: String = "",
+    val decision: String = "",
 ) {
-    fun summary(): String = "${fmt(time)}  ${data.ifEmpty { action }}"
+    fun summary(): String = "${fmt(time)}  ${decision.ifEmpty { "-" }}\n${data.ifEmpty { action }}"
 
     fun text(): String = listOf(
         "time: ${fmt(time)}",
+        "decision: $decision",
+        "rule key: $ruleKey",
         "action: $action",
         "data: $data",
         "package: $pkg",
@@ -36,6 +40,8 @@ data class LinkEntry(
         .put("referrer", referrer)
         .put("extraReferrer", extraReferrer)
         .put("callingPackage", callingPackage)
+        .put("ruleKey", ruleKey)
+        .put("decision", decision)
 
     companion object {
         fun fromJson(o: JSONObject): LinkEntry = LinkEntry(
@@ -46,6 +52,8 @@ data class LinkEntry(
             referrer = o.optString("referrer"),
             extraReferrer = o.optString("extraReferrer"),
             callingPackage = o.optString("callingPackage"),
+            ruleKey = o.optString("ruleKey"),
+            decision = o.optString("decision"),
         )
     }
 }

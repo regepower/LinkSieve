@@ -1,12 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Scan: read the link filters of all installed apps. Not a Play Store app. -->
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
 
     <application
         android:label="@string/app_name"
         android:icon="@mipmap/ic_launcher"
         android:theme="@android:style/Theme.DeviceDefault.DayNight">
 
-        <!-- Log screen, opened from the launcher. -->
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -16,13 +21,15 @@
             </intent-filter>
         </activity>
 
-        <!-- Receives http/https links and custom schemes (market://, intent://).
-             Not autoVerify: verified domains do not reach us anyway. -->
+        <!-- Receives links. Schemes must match Rules.SCHEMES.
+             Generic http/https (no host) makes LinkSieve selectable as default browser. -->
         <activity
             android:name=".ProbeActivity"
             android:exported="true"
             android:excludeFromRecents="true"
-            android:noHistory="true">
+            android:noHistory="true"
+            android:taskAffinity=""
+            android:theme="@style/Translucent">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

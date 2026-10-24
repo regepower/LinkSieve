@@ -1,10 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LinkSieve</string>
+    <string name="tab_log">Log</string>
+    <string name="tab_scan">Found links</string>
     <string name="clear">Clear log</string>
+    <string name="scan">Scan apps</string>
+    <string name="scanning">Scanning…</string>
+    <string name="default_browser">Default browser</string>
+    <string name="copy_schemes">Copy missing schemes</string>
     <string name="no_entries">No links received yet. Open a link in another app to test.</string>
-    <string name="logged">Link logged</string>
-    <string name="detail_title">Incoming intent</string>
+    <string name="scan_hint">Tap \"Scan apps\" to list the links registered by installed apps.</string>
+    <string name="scan_count">%1$d link patterns in %2$d apps</string>
+    <string name="st_verified">Web link with autoVerify: opens the app directly. Switch off \"Open supported links\" for that app, then it goes to the default browser (LinkSieve).</string>
+    <string name="st_browser">Web link: reaches LinkSieve when LinkSieve is the default browser.</string>
+    <string name="st_caught">Caught: LinkSieve appears in the \"Open with\" choice.</string>
+    <string name="st_missing">Not caught: scheme is not in the LinkSieve manifest yet.</string>
+    <string name="d_app">App</string>
+    <string name="d_package">Package</string>
+    <string name="d_activity">Activity</string>
+    <string name="d_link">Link</string>
+    <string name="link_settings">Link settings</string>
+    <string name="detail_title">Incoming link</string>
     <string name="copy">Copy</string>
     <string name="copied">Copied</string>
+    <string name="close">Close</string>
+    <string name="forget_rule">Forget rule</string>
+    <string name="rule_removed">Rule removed</string>
+    <string name="ask_title">Open link?</string>
+    <string name="ask_message">From: %1$s\n\n%2$s</string>
+    <string name="remember">Remember for %1$s</string>
+    <string name="open">Open</string>
+    <string name="block">Block</string>
+    <string name="blocked">Blocked: %1$s</string>
+    <string name="no_target">No app found for this link</string>
+    <string name="unknown_source">unknown</string>
 </resources>

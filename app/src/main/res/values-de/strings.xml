@@ -1,10 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">LinkSieve</string>
+    <string name="tab_log">Protokoll</string>
+    <string name="tab_scan">Gefundene Links</string>
     <string name="clear">Protokoll leeren</string>
+    <string name="scan">Apps scannen</string>
+    <string name="scanning">Scanne…</string>
+    <string name="default_browser">Standard-Browser</string>
+    <string name="copy_schemes">Fehlende Schemes kopieren</string>
     <string name="no_entries">Noch keine Links empfangen. Öffne einen Link in einer anderen App zum Testen.</string>
-    <string name="logged">Link protokolliert</string>
-    <string name="detail_title">Eingehender Intent</string>
+    <string name="scan_hint">Tippe auf „Apps scannen“, um die Links der installierten Apps aufzulisten.</string>
+    <string name="scan_count">%1$d Link-Muster in %2$d Apps</string>
+    <string name="st_verified">Web-Link mit autoVerify: öffnet die App direkt. Bei dieser App „Unterstützte Links öffnen“ ausschalten, dann geht er an den Standard-Browser (LinkSieve).</string>
+    <string name="st_browser">Web-Link: kommt bei LinkSieve an, wenn LinkSieve Standard-Browser ist.</string>
+    <string name="st_caught">Abgefangen: LinkSieve erscheint in der Auswahl „Öffnen mit“.</string>
+    <string name="st_missing">Nicht abgefangen: Scheme fehlt noch im LinkSieve-Manifest.</string>
+    <string name="d_app">App</string>
+    <string name="d_package">Paket</string>
+    <string name="d_activity">Activity</string>
+    <string name="d_link">Link</string>
+    <string name="link_settings">Link-Einstellungen</string>
+    <string name="detail_title">Eingehender Link</string>
     <string name="copy">Kopieren</string>
     <string name="copied">Kopiert</string>
+    <string name="close">Schließen</string>
+    <string name="forget_rule">Regel löschen</string>
+    <string name="rule_removed">Regel gelöscht</string>
+    <string name="ask_title">Link öffnen?</string>
+    <string name="ask_message">Von: %1$s\n\n%2$s</string>
+    <string name="remember">Merken für %1$s</string>
+    <string name="open">Öffnen</string>
+    <string name="block">Blockieren</string>
+    <string name="blocked">Blockiert: %1$s</string>
+    <string name="no_target">Keine App für diesen Link gefunden</string>
+    <string name="unknown_source">unbekannt</string>
 </resources>
